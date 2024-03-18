@@ -15,6 +15,11 @@ import picamera
 import RPi.GPIO as GPIO
 #---------------------
 
+#---Debug Constants---
+DEBUG = False
+#---------------------
+
+
 #----Camera Constants----
 RECORD_TIME_SEC = 10
 CAMERA_RESOLUTION = (640, 480)
@@ -45,6 +50,8 @@ GPIO.setup(BUTTON_PIN,GPIO.IN, pull_up_down=GPIO.PUD_UP)
 #Initialize Variables
 test_number = 1
 
+print("> ---Starting Skyguard---")
+
 #Wait for Button Press
 while(True):
         timer = 100
@@ -63,24 +70,23 @@ while(True):
         time.sleep(0.01)
         timer -= 1
 
-        print("> ---Starting Skyguard---")
+        print("> ---Start Recording---")
 
         #Start Camera
-        camera.start_recording('data/video/skyguard_' + DATE + '_test' + test_number + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
+        camera.start_recording('data/video/skyguard_' + DATE + '_test' + str(test_number) + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
 
         #Turn On Recording LED
         GPIO.output(CAMERA_LED,GPIO.HIGH)
 
         #Setup Loop Time
         curr_time = time.time()
-        f = open("data/test" + test_number + "_data.txt", "a")
+        f = open("data/test" + str(test_number) + "_data.txt", "a")
         time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
         final_str = "Video Start: " + time_str
         f.write(final_str)
         f.close()
-        end_time = time.time() + RECORD_TIME_SEC
 
-        while end_time > curr_time:
+        while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
                 #Camera Loop
                 camera.wait_recording()
 
@@ -91,7 +97,8 @@ while(True):
                 newdata=ser.readline()
                 n_data = newdata.decode('latin-1')
                 if n_data[0:6] == '$GPRMC':
-                        print("> Receiving GPS Data")
+                        if(DEBUG):
+                                print("> Receiving GPS Data")
                         newmsg=pynmea2.parse(n_data)
                         lat=newmsg.latitude
                         lng=newmsg.longitude
@@ -103,13 +110,7 @@ while(True):
                         f.write(final_str)
                         f.close()
 
-                #Loop Timer
-                curr_time = time.time()
-
-        while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
-                time.sleep(0.01)
-
-        print("> ---Stop Skyguard---")
+        print("> ---Stop Recording---")
         curr_time = time.time()
         f = open("data/test" + test_number + "_data.txt", "a")
         time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
