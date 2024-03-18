@@ -1,3 +1,0 @@
-#Ignore Video, GPS, and Test Data
-*.txt
-*.h264
