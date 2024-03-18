@@ -93,3 +93,5 @@ final_str = "Video End: " + time_str
 f.write(final_str)
 f.close()
 camera.stop_recording()
+
+GPIO.output(17,GPIO.LOW)
