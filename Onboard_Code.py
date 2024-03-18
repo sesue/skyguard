@@ -12,13 +12,14 @@ import picamera
 #------------------
 
 #----Constants----
-RECORD_TIME_SEC = 120
+RECORD_TIME_SEC = 30
 CAMERA_RESOLUTION = (640, 480)
 RESOLUTION_FIRST_STR = "640"
 RESOLUTION_SECOND_STR = "480"
 CAMERA_FRAMERATE = 10
 FRAMERATE_STR = "10"
-TEST_NUMBER = "7"
+TEST_NUMBER = "UNKNOWN_TEST"
+DATE = "UNKNOWN_DATE"
 #-----------------
 
 
@@ -30,11 +31,11 @@ camera.framerate = CAMERA_FRAMERATE
 
 print ("> Starting Skyguard")
 
-camera.start_recording('skyguard_3-8-24_test' + TEST_NUMBER + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
+camera.start_recording('data/video/skyguard_' + DATE + '_test' + TEST_NUMBER + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
 
 #Setup Loop Time
 curr_time = time.time()
-f = open("test" + TEST_NUMBER + "_data.txt", "a")
+f = open("data/test" + TEST_NUMBER + "_data.txt", "a")
 time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
 final_str = "Video Start: " + time_str
 f.write(final_str)
@@ -59,7 +60,7 @@ while end_time > curr_time:
                 time_obj = time.time()
                 time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "\n"
                 final_str = latClng + "," + time_str
-                f = open("gps_test" + TEST_NUMBER + ".txt", "a")
+                f = open("data/gps/gps_test" + TEST_NUMBER + ".txt", "a")
                 f.write(final_str)
                 f.close()
 
@@ -68,9 +69,9 @@ while end_time > curr_time:
 
 print ("> Ending Skyguard")
 curr_time = time.time()
-f = open("test" + TEST_NUMBER + "_data.txt", "a")
+f = open("data/test" + TEST_NUMBER + "_data.txt", "a")
 time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
-final_str = "Video Start: " + time_str
+final_str = "Video End: " + time_str
 f.write(final_str)
 f.close()
 camera.stop_recording()
