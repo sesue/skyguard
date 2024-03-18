@@ -106,13 +106,13 @@ while(True):
                         time_obj = time.time()
                         time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "\n"
                         final_str = latClng + "," + time_str
-                        f = open("data/gps/gps_test" + test_number + ".txt", "a")
+                        f = open("data/gps/gps_test" + str(test_number) + ".txt", "a")
                         f.write(final_str)
                         f.close()
 
         print("> ---Stop Recording---")
         curr_time = time.time()
-        f = open("data/test" + test_number + "_data.txt", "a")
+        f = open("data/test" + str(test_number) + "_data.txt", "a")
         time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
         final_str = "Video End: " + time_str
         f.write(final_str)
