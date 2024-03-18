@@ -44,9 +44,21 @@ GPIO.setup(CAMERA_LED,GPIO.OUT)
 GPIO.setup(BUTTON_PIN,GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #Wait for Button Press
+timer = 100
+flag = 1
 print("> Waiting on Button...")
 while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
+    if(timer <= 0):
+        if(flag):
+            GPIO.output(CAMERA_LED,GPIO.HIGH)
+            flag = 0
+        else:
+            GPIO.output(CAMERA_LED,GPIO.LOW) 
+            flag = 1
+        timer = 100
+
     time.sleep(0.01)
+    timer = timer-1
 
 print("> ---Starting Skyguard---")
 
