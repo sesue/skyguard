@@ -32,7 +32,7 @@ BUTTON_PIN = 16
 #--------------------------
 
 
-print ("> Initializing Skyguard")
+print("> Initializing Skyguard")
 #Initialize Camera
 camera = picamera.PiCamera()
 camera.resolution = CAMERA_RESOLUTION
@@ -44,10 +44,11 @@ GPIO.setup(CAMERA_LED,GPIO.OUT)
 GPIO.setup(BUTTON_PIN,GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #Wait for Button Press
+print("> Waiting on Button...")
 while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
     time.sleep(0.01)
 
-print ("> ---Starting Skyguard---")
+print("> ---Starting Skyguard---")
 
 #Start Camera
 camera.start_recording('data/video/skyguard_' + DATE + '_test' + TEST_NUMBER + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
@@ -90,7 +91,7 @@ while end_time > curr_time:
         #Loop Timer
         curr_time = time.time()
 
-print ("> ---Ending Skyguard---")
+print("> ---Ending Skyguard---")
 curr_time = time.time()
 f = open("data/test" + TEST_NUMBER + "_data.txt", "a")
 time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
