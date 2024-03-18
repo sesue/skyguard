@@ -16,7 +16,7 @@ import RPi.GPIO as GPIO
 #---------------------
 
 #----Camera Constants----
-RECORD_TIME_SEC = 30
+RECORD_TIME_SEC = 10
 CAMERA_RESOLUTION = (640, 480)
 RESOLUTION_FIRST_STR = "640"
 RESOLUTION_SECOND_STR = "480"
@@ -41,7 +41,11 @@ camera.framerate = CAMERA_FRAMERATE
 #Initialize Input/Output
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(CAMERA_LED,GPIO.OUT)
-#GPIO.setup(BUTTON_PIN,GPIO.IN)
+GPIO.setup(BUTTON_PIN,GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+#Wait for Button Press
+while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
+    time.sleep(0.01)
 
 print ("> ---Starting Skyguard---")
 
