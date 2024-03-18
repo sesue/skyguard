@@ -66,11 +66,11 @@ while(True):
                                 GPIO.output(CAMERA_LED,GPIO.LOW) 
                                 flag = True
                         timer = 100
-
-        time.sleep(0.01)
-        timer -= 1
+                time.sleep(0.01)
+                timer -= 1
 
         print("> ---Start Recording---")
+        time.sleep(0.5)
 
         #Start Camera
         camera.start_recording('data/video/skyguard_' + DATE + '_test' + str(test_number) + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
@@ -122,5 +122,6 @@ while(True):
         GPIO.output(CAMERA_LED,GPIO.LOW)
 
         test_number += 1
+        time.sleep(0.5)
 
 print("> ---Ending Skyguard---")
