@@ -11,7 +11,11 @@ import time
 import picamera
 #------------------
 
-#----Constants----
+#--LED/Button Import--
+import RPi.GPIO as GPIO
+#---------------------
+
+#----Camera Constants----
 RECORD_TIME_SEC = 30
 CAMERA_RESOLUTION = (640, 480)
 RESOLUTION_FIRST_STR = "640"
@@ -22,6 +26,11 @@ TEST_NUMBER = "UNKNOWN_TEST"
 DATE = "UNKNOWN_DATE"
 #-----------------
 
+#--Input/Output Constants--
+CAMERA_LED = 17
+BUTTON_PIN = 16
+#--------------------------
+
 
 print ("> Initializing Skyguard")
 #Initialize Camera
@@ -29,9 +38,18 @@ camera = picamera.PiCamera()
 camera.resolution = CAMERA_RESOLUTION
 camera.framerate = CAMERA_FRAMERATE
 
+#Initialize Input/Output
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(CAMERA_LED,GPIO.OUT)
+#GPIO.setup(BUTTON_PIN,GPIO.IN)
+
 print ("> Starting Skyguard")
 
+#Start Camera
 camera.start_recording('data/video/skyguard_' + DATE + '_test' + TEST_NUMBER + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
+
+#Turn On Recording LED
+GPIO.output(17,GPIO.HIGH)
 
 #Setup Loop Time
 curr_time = time.time()
