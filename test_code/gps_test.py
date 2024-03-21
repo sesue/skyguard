@@ -2,7 +2,7 @@
 import serial
 import pynmea2
 
-print("Starting Skyguard GPS.")
+print("---Running GPS Test---")
 #f = open("gpsdata.txt", "a")
 while True:
         port="/dev/ttyAMA0"
@@ -15,7 +15,7 @@ while True:
                 lat=newmsg.latitude
                 lng=newmsg.longitude
                 gps = "Latitude=" + str(lat) + " and Longitude=" + str(lng)
-                print(gps)
+                print("> " + gps)
                 latClng = str(lat) + "," + str(lng) + "\n"
                 f = open("gpsdata.txt", "a")
                 f.write(latClng)
