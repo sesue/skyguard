@@ -24,7 +24,7 @@ import csv
 
 
 #---Debug Constants---
-DEBUG = False
+DEBUG = True
 #---------------------
 
 #----Camera Constants----
@@ -51,7 +51,7 @@ BOX_SERIAL_NUMBER = "00001"
 #-------------------------
 
 
-print("> Initializing Skyguard")
+print("---Initializing Skyguard---\n")
 #Initialize Camera
 camera = picamera.PiCamera()
 camera.resolution = CAMERA_RESOLUTION
@@ -73,14 +73,13 @@ metadata = {
     "fps": CAMERA_FRAMERATE,
     "resolution": CAMERA_RESOLUTION
     }
-
-print("> ---Starting Skyguard---")
+    
 
 #Wait for Button Press
 while(True):
         timer = 100
         flag = True
-        print("> Waiting on Button...")
+        print("Waiting on Button to Start...\n")
         while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
                 if(timer <= 0):
                         if(flag):
@@ -93,11 +92,15 @@ while(True):
                 time.sleep(0.01)
                 timer -= 1
 
-        print("> ---Start Recording---")
+        print("---Start Skyguard---")
         time.sleep(0.5)
 
         #Start Camera
-        camera.start_recording('data/video/recording' + str(test_number) + '.h264')
+        recordingFilePath = 'data/video/recording' + str(test_number) + '.h264'
+        if(DEBUG):
+            print("> Created " + recordingFilePath)
+        camera.start_recording(recordingFilePath)
+        print("> Recording")
 
         #Turn On Recording LED
         GPIO.output(CAMERA_LED,GPIO.HIGH)
@@ -109,6 +112,9 @@ while(True):
         framesFilePath = "data/framedata/frames" + str(test_number) + ".csv"
         framesWriter = csv.writer(open(framesFilePath, "w", newline = ''))
         framesWriter.writerow(["frameIndex", "timestamp", "latitude", "longitude", "heading", "groundHeightMeters"])
+        
+        if(DEBUG):
+            print("> Created " + framesFilePath)
 
         while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
                 #Camera Loop
@@ -130,17 +136,21 @@ while(True):
                         time_str = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "Z"
                         framesWriter.writerow([FRAME_INDEX_HOLDER, "timestamp", str(lat), str(lng), STANDARD_HEADING, STANDARD_HEIGHT])
 
-        print("> ---Stop Recording---")
+        print(">Recording Stopped")
         curr_time = time.time()
         metadata["recordEnd"] = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "Z"
         camera.stop_recording()
 
         #MetaData File Dump
+        metaFilePath = "data/metadata/meta" + str(test_number) + ".json"
+        if(DEBUG):
+            print("> Created " + metaFilePath)
         json_object = json.dumps(metadata, indent=4)
-        with open("data/metadata/meta" + str(test_number) + ".json","w") as outfile:
+        with open(metaFilePath,"w") as outfile:
                 outfile.write(json_object)
 
         GPIO.output(CAMERA_LED,GPIO.LOW)
+        print("---Stop Skyguard---\n")
 
         test_number += 1
         time.sleep(0.5)
