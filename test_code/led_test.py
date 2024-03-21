@@ -11,9 +11,10 @@ CAMERA_LED = 17
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(CAMERA_LED,GPIO.OUT)
 
+print("---Running LED Test---")
 flag = True
 while(True):
-        print("> Flash Lights")
+        print("> Swap Lights")
         if(flag):
                 GPIO.output(CAMERA_LED,GPIO.HIGH)
                 flag = False
