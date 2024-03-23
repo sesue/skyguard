@@ -128,7 +128,7 @@ while(True):
                         lng=newmsg.longitude
                         time_obj = time.time()
                         time_str = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "Z"
-                        framesWriter.writerow([FRAME_INDEX_HOLDER, "timestamp", str(lat), str(lng), STANDARD_HEADING, STANDARD_HEIGHT])
+                        framesWriter.writerow([FRAME_INDEX_HOLDER, time_str, str(lat), str(lng), STANDARD_HEADING, STANDARD_HEIGHT])
 
         print("> ---Stop Recording---")
         curr_time = time.time()
