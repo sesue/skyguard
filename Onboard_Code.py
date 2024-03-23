@@ -31,7 +31,7 @@ DEBUG = False
 RECORD_TIME_SEC = 10
 CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 10
-DATE = "UNKNOWN_DATE"
+DATE = "01/01/1970"
 #-----------------------
 
 #--Input/Output Constants--
