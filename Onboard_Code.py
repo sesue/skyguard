@@ -31,7 +31,7 @@ DEBUG = True
 RECORD_TIME_SEC = 10
 CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 10
-DATE = "UNKNOWN_DATE"
+DATE = "01/01/1970"
 #-----------------------
 
 #--Input/Output Constants--
@@ -134,7 +134,7 @@ while(True):
                         lng=newmsg.longitude
                         time_obj = time.time()
                         time_str = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "Z"
-                        framesWriter.writerow([FRAME_INDEX_HOLDER, "timestamp", str(lat), str(lng), STANDARD_HEADING, STANDARD_HEIGHT])
+                        framesWriter.writerow([FRAME_INDEX_HOLDER, time_str, str(lat), str(lng), STANDARD_HEADING, STANDARD_HEIGHT])
 
         print(">Recording Stopped")
         curr_time = time.time()
