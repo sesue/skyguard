@@ -15,28 +15,47 @@ import picamera
 import RPi.GPIO as GPIO
 #---------------------
 
+#---File Imports---
+import json
+import csv
+#------------------
+
+
+
+
 #---Debug Constants---
-DEBUG = False
+DEBUG = True
 #---------------------
 
+#---Date Constants---
+DAY = 01
+MONTH = 01
+YEAR = 2024
+#---------------------
 
 #----Camera Constants----
-RECORD_TIME_SEC = 10
 CAMERA_RESOLUTION = (640, 480)
-RESOLUTION_FIRST_STR = "640"
-RESOLUTION_SECOND_STR = "480"
 CAMERA_FRAMERATE = 10
-FRAMERATE_STR = "10"
-DATE = "UNKNOWN_DATE"
-#-----------------
+#-----------------------
 
 #--Input/Output Constants--
 CAMERA_LED = 17
 BUTTON_PIN = 16
 #--------------------------
 
+#----File Constants----
+FRAME_INDEX_HOLDER = "0"
+STANDARD_HEADING = "0.0"  # Heading for North
+STANDARD_HEIGHT = "3.048" # 10ft = 3.048m
+#----------------------
 
-print("> Initializing Skyguard")
+#--Hardware ID Constants--
+BOX_MODEL_NUMBER = "1.0"
+BOX_SERIAL_NUMBER = "00001"
+#-------------------------
+
+
+print("---Initializing Skyguard---\n")
 #Initialize Camera
 camera = picamera.PiCamera()
 camera.resolution = CAMERA_RESOLUTION
@@ -49,14 +68,22 @@ GPIO.setup(BUTTON_PIN,GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #Initialize Variables
 test_number = 1
-
-print("> ---Starting Skyguard---")
+metadata = {
+    "boxModelNumber": BOX_MODEL_NUMBER,
+    "boxSerialNumber": BOX_SERIAL_NUMBER,
+    "recordStart": "-",
+    "recordEnd": "-",
+    "recordingTime": RECORD_TIME_SEC,
+    "fps": CAMERA_FRAMERATE,
+    "resolution": CAMERA_RESOLUTION
+    }
+    
 
 #Wait for Button Press
 while(True):
         timer = 100
         flag = True
-        print("> Waiting on Button...")
+        print("Waiting on Button to Start...\n")
         while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
                 if(timer <= 0):
                         if(flag):
@@ -69,22 +96,29 @@ while(True):
                 time.sleep(0.01)
                 timer -= 1
 
-        print("> ---Start Recording---")
+        print("---Start Skyguard---")
         time.sleep(0.5)
 
         #Start Camera
-        camera.start_recording('data/video/skyguard_' + DATE + '_test' + str(test_number) + '_' + RESOLUTION_FIRST_STR + 'x' + RESOLUTION_SECOND_STR + '_FR' + FRAMERATE_STR + '.h264')
+        recordingFilePath = 'data/video/recording' + str(test_number) + '.h264'
+        if(DEBUG):
+            print("> Created " + recordingFilePath)
+        camera.start_recording(recordingFilePath)
+        print("> Recording")
 
         #Turn On Recording LED
         GPIO.output(CAMERA_LED,GPIO.HIGH)
 
-        #Setup Loop Time
+        #Setup meta.json and frames.csv
         curr_time = time.time()
-        f = open("data/test" + str(test_number) + "_data.txt", "a")
-        time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
-        final_str = "Video Start: " + time_str
-        f.write(final_str)
-        f.close()
+        metadata["recordStart"] = YEAR + "-" + MONTH + "-" + DAY + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "Z"
+
+        framesFilePath = "data/framedata/frames" + str(test_number) + ".csv"
+        framesWriter = csv.writer(open(framesFilePath, "w", newline = ''))
+        framesWriter.writerow(["frameIndex", "timestamp", "latitude", "longitude", "heading", "groundHeightMeters"])
+        
+        if(DEBUG):
+            print("> Created " + framesFilePath)
 
         while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
                 #Camera Loop
@@ -102,26 +136,27 @@ while(True):
                         newmsg=pynmea2.parse(n_data)
                         lat=newmsg.latitude
                         lng=newmsg.longitude
-                        latClng = str(lat) + "," + str(lng)
                         time_obj = time.time()
-                        time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "\n"
-                        final_str = latClng + "," + time_str
-                        f = open("data/gps/gps_test" + str(test_number) + ".txt", "a")
-                        f.write(final_str)
-                        f.close()
+                        time_str = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "Z"
+                        framesWriter.writerow([FRAME_INDEX_HOLDER, time_str, str(lat), str(lng), STANDARD_HEADING, STANDARD_HEIGHT])
 
-        print("> ---Stop Recording---")
+        print(">Recording Stopped")
         curr_time = time.time()
-        f = open("data/test" + str(test_number) + "_data.txt", "a")
-        time_str = time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "\n"
-        final_str = "Video End: " + time_str
-        f.write(final_str)
-        f.close()
+        metadata["recordEnd"] = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "Z"
         camera.stop_recording()
 
+        #MetaData File Dump
+        metaFilePath = "data/metadata/meta" + str(test_number) + ".json"
+        if(DEBUG):
+            print("> Created " + metaFilePath)
+        json_object = json.dumps(metadata, indent=4)
+        with open(metaFilePath,"w") as outfile:
+                outfile.write(json_object)
+
         GPIO.output(CAMERA_LED,GPIO.LOW)
+        print("---Stop Skyguard---\n")
 
         test_number += 1
         time.sleep(0.5)
 
-print("> ---Ending Skyguard---")
+print("> ---Broken Loop Skyguard---")
