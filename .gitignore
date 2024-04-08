@@ -3,6 +3,6 @@
 ################################################################################
 /.vs/
 
-/data/*.txt
-/data/gps/*.txt
+/data/framedata/*.csv
+/data/metadata/*.json
 /data/video/*.h264
