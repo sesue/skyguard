@@ -27,11 +27,15 @@ import csv
 DEBUG = True
 #---------------------
 
+#---Date Constants---
+DAY = 01
+MONTH = 01
+YEAR = 2024
+#---------------------
+
 #----Camera Constants----
-RECORD_TIME_SEC = 10
 CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 10
-DATE = "01/01/1970"
 #-----------------------
 
 #--Input/Output Constants--
@@ -107,7 +111,7 @@ while(True):
 
         #Setup meta.json and frames.csv
         curr_time = time.time()
-        metadata["recordStart"] = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "Z"
+        metadata["recordStart"] = YEAR + "-" + MONTH + "-" + DAY + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "Z"
 
         framesFilePath = "data/framedata/frames" + str(test_number) + ".csv"
         framesWriter = csv.writer(open(framesFilePath, "w", newline = ''))
