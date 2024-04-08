@@ -1,8 +1,11 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-/.vs/
 
+# Ignore Recorded Files
 /data/framedata/*.csv
 /data/metadata/*.json
 /data/video/*.h264
+
+# Ignore Visual Studio Files
+/.vs/
