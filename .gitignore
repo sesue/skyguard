@@ -4,3 +4,8 @@
 /.vs/skyguard/FileContentIndex
 /.vs/skyguard/v17
 /.vs/slnx.sqlite
+/.vs/
+
+/data/*.txt
+/data/gps/*.txt
+/data/video/*.h264

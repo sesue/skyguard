@@ -1,4 +1,0 @@
-#Ignore Video, GPS, and Test Data
-/data/*.txt
-/data/gps/*.txt
-/data/video/*.h264

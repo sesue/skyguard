@@ -24,7 +24,7 @@ import csv
 
 
 #---Debug Constants---
-DEBUG = True
+DEBUG = False
 #---------------------
 
 #---Date Constants---
