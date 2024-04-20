@@ -8,7 +8,7 @@ import time
 #-----------------
 
 #--Camera Imports--
-import picamera
+        #import picamera
 #------------------
 
 #--LED/Button Import--
@@ -28,14 +28,15 @@ DEBUG = False
 #---------------------
 
 #---Date Constants---
-DAY = 01
-MONTH = 01
-YEAR = 2024
+DAY = "01"
+MONTH = "01"
+YEAR = "2024"
 #---------------------
 
 #----Camera Constants----
 CAMERA_RESOLUTION = (640, 480)
 CAMERA_FRAMERATE = 10
+RECORD_TIME_SEC = 10
 #-----------------------
 
 #--Input/Output Constants--
@@ -57,9 +58,9 @@ BOX_SERIAL_NUMBER = "00001"
 
 print("---Initializing Skyguard---\n")
 #Initialize Camera
-camera = picamera.PiCamera()
-camera.resolution = CAMERA_RESOLUTION
-camera.framerate = CAMERA_FRAMERATE
+        #camera = picamera.PiCamera()
+        #camera.resolution = CAMERA_RESOLUTION
+        #camera.framerate = CAMERA_FRAMERATE
 
 #Initialize Input/Output
 GPIO.setmode(GPIO.BCM)
@@ -100,10 +101,10 @@ while(True):
         time.sleep(0.5)
 
         #Start Camera
-        recordingFilePath = 'data/video/recording' + str(test_number) + '.h264'
-        if(DEBUG):
-            print("> Created " + recordingFilePath)
-        camera.start_recording(recordingFilePath)
+#        recordingFilePath = 'data/video/recording' + str(test_number) + '.h264'
+#        if(DEBUG):
+#            print("> Created " + recordingFilePath)
+#        camera.start_recording(recordingFilePath)
         print("> Recording")
 
         #Turn On Recording LED
@@ -122,7 +123,7 @@ while(True):
 
         while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
                 #Camera Loop
-                camera.wait_recording()
+#                camera.wait_recording()
 
                 #GPS Loop
                 port="/dev/ttyAMA0"
@@ -143,7 +144,7 @@ while(True):
         print(">Recording Stopped")
         curr_time = time.time()
         metadata["recordEnd"] = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "Z"
-        camera.stop_recording()
+#        camera.stop_recording()
 
         #MetaData File Dump
         metaFilePath = "data/metadata/meta" + str(test_number) + ".json"
