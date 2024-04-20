@@ -31,6 +31,7 @@ DEBUG = False
 DAY = "01"
 MONTH = "01"
 YEAR = "2024"
+DATE = YEAR + "-" + MONTH + "-" + DAY
 #---------------------
 
 #----Camera Constants----
