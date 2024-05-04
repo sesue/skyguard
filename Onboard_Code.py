@@ -8,7 +8,7 @@ import time
 #-----------------
 
 #--Camera Imports--
-        #import picamera
+import picamera
 #------------------
 
 #--LED/Button Import--
@@ -22,9 +22,9 @@ import csv
 
 
 
-
-#---Debug Constants---
+#--------Debug--------
 DEBUG = False
+GPIO.setwarnings(False)
 #---------------------
 
 #---Date Constants---
@@ -59,9 +59,9 @@ BOX_SERIAL_NUMBER = "00001"
 
 print("---Initializing Skyguard---\n")
 #Initialize Camera
-        #camera = picamera.PiCamera()
-        #camera.resolution = CAMERA_RESOLUTION
-        #camera.framerate = CAMERA_FRAMERATE
+camera = picamera.PiCamera()
+camera.resolution = CAMERA_RESOLUTION
+camera.framerate = CAMERA_FRAMERATE
 
 #Initialize Input/Output
 GPIO.setmode(GPIO.BCM)
@@ -102,10 +102,10 @@ while(True):
         time.sleep(0.5)
 
         #Start Camera
-#        recordingFilePath = 'data/video/recording' + str(test_number) + '.h264'
-#        if(DEBUG):
-#            print("> Created " + recordingFilePath)
-#        camera.start_recording(recordingFilePath)
+        recordingFilePath = 'data/video/recording' + str(test_number) + '.h264'
+        if(DEBUG):
+            print("> Created " + recordingFilePath)
+        camera.start_recording(recordingFilePath)
         print("> Recording")
 
         #Turn On Recording LED
@@ -124,7 +124,7 @@ while(True):
 
         while GPIO.input(BUTTON_PIN) == GPIO.HIGH:
                 #Camera Loop
-#                camera.wait_recording()
+                camera.wait_recording()
 
                 #GPS Loop
                 port="/dev/ttyAMA0"
@@ -142,10 +142,10 @@ while(True):
                         time_str = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((time_obj - int(time_obj)) * 1000)) + "Z"
                         framesWriter.writerow([FRAME_INDEX_HOLDER, time_str, str(lat), str(lng), STANDARD_HEADING, STANDARD_HEIGHT])
 
-        print(">Recording Stopped")
+        print("> Recording Stopped")
         curr_time = time.time()
         metadata["recordEnd"] = DATE + "T" + time.strftime('%H:') + time.strftime('%M:') + time.strftime('%S.') + str(int((curr_time - int(curr_time)) * 1000)) + "Z"
-#        camera.stop_recording()
+        camera.stop_recording()
 
         #MetaData File Dump
         metaFilePath = "data/metadata/meta" + str(test_number) + ".json"
