@@ -23,7 +23,7 @@ import csv
 
 
 #--------Debug--------
-DEBUG = False
+DEBUG = True
 GPIO.setwarnings(False)
 #---------------------
 
